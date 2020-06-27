@@ -73,6 +73,8 @@ If you have been denied access to the operation, there may be the following reas
  	
  	This is the name that will be shown in the “Consent screen” when making authentication from account.
  	 Leave all the other options to their default values.
+ 	 
+ 	 4.2 customize the query window -> cange application settings. (GoogleDrive SynchronizatorJava ) choose Read,Copy,Dlete,Update and so w..
    
    
    5. Click on the button “SAVE“.
@@ -88,4 +90,9 @@ If you have been denied access to the operation, there may be the following reas
 	Rename file on “ credentials.json ”
    
    10. Go to : GET STARTING (INSTRUCTION) 
+   
+   ==============================
+   VIDEO HELP By GET Credentials:
+   
+   https://www.iperiusbackup.net/en/how-to-enable-google-drive-api-and-get-client-credentials/
        
