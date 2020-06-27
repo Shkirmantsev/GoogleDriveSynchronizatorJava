@@ -11,13 +11,13 @@
         1. confirm access by clicking on the entire long link from google that appeared either in console or in the program text Area
         2. confirm two-factor authentication in your smartphone, check the E-mail.
     6.  Done.
+    
 =====================================
 If you have been denied access to the operation, there may be the following reasons:
     • your credential file is expired
     • google still need time for proof credentials, maybe more then one-three hours
     • you have forgotten to add this app (according to the name of the program) to Google Drive Projects .
 =====================================
-  
 
 
 How You can get an credentials?
