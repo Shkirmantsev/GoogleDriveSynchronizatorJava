@@ -2,50 +2,44 @@
 	GET STARTING (INSTRUCTION):
 	===========================
 
-<<<<<<< HEAD
+
    1. Download Folder „READY_TO_START“ with file 	“GoogleDriveSynchronizatorJava.jar”
    
    2. run application with command: “ java -jar 	GoogleDriveSynchronizatorJava.jar  ”
    
    3. set settings (only onse):
    	
-	◦ Important: add “ credentials.json ” in folder “Secret” (The folder will 	  appear beside file “GoogleDriveSynchronizatorJava.jar”);
+	- Important: add “ credentials.json ” in folder “Secret” (The folder will 	appear beside file “GoogleDriveSynchronizatorJava.jar”);
    	
-	◦ choose your folder in PC,which will be as “root” for Drive service 		  (necessary only once)
+	- choose your folder in PC,which will be as “root” for Drive service 		  (necessary only once)
    	
-	◦ write and save your e-mail for Drive-disc (not necessary), in order to 	  recognize active synchronization
+	- write and save your e-mail for Drive-disc (not necessary), in order to
+	  recognize active synchronization
    
    4. Choose option (radio buttons) and start program.
    
    5. If You run the program for the first time:
-        1. confirm access by clicking on the entire long link from google that 	     appeared either in console or in the program text Area
-        2. confirm two-factor authentication in your smartphone, check the E-		mail.
+  	
+	1.confirm access by clicking on the entire long link from google that 	  	  appeared either in console or in the program text Area
+	
+	2. confirm two-factor authentication in your smartphone, check the E-		   mail.
+   
    6.  Done.
-=======
-    1. 1. Download Folder „READY_TO_START“ with file “GoogleDriveSynchronizatorJava.jar”
-    2. run application with command: “ java -jar GoogleDriveSynchronizatorJava.jar  ”
-    3. set settings (only onse):
-        ◦ Important: add “ credentials.json ” in folder “Secret” (The folder will appear beside file “GoogleDriveSynchronizatorJava.jar”);
-        ◦ choose your folder in PC,which will be as “root” for Drive service (necessary only once)
-        ◦ write and save your e-mail for Drive-disc (not necessary), in order to recognize active synchronization
-    4. Choose option (radio buttons) and start program.
-    5. If You run the program for the first time:
-        1. confirm access by clicking on the entire long link from google that appeared either in console or in the program text Area
-        2. confirm two-factor authentication in your smartphone, check the E-mail.
-    6.  Done.
->>>>>>> c6f272c017a351482013a3d2231400cf627c56d5
+
+    
+
     
 =====================================
-	If you have been denied access to the operation, there may be the following reasons:
+	
+If you have been denied access to the operation, there may be the following reasons:
+-------------------------------------
 	
     • your credential file is expired
-    • google still need time for proof credentials, maybe more then one-three hours
-    • you have forgotten to add this app (according to the name of the program) to Google Drive Projects .
-<<<<<<< HEAD
+    • google still need time for proof credentials, maybe more then one-three 	hours
+    • you have forgotten to add this app (according to the name of the program) 	to Google Drive Projects .
+
 ===================================== 
-=======
-=====================================
->>>>>>> c6f272c017a351482013a3d2231400cf627c56d5
+
 
 	============================================
 	How You can get an credentials?
