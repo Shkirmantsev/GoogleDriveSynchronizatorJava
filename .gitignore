@@ -7,4 +7,7 @@ build/libs/**
 .gradle/buildOutputCleanup/**
 Secret/
 Secret/**
+.gradle/6.3/fileHashes/fileHashes.lock
+build/scripts/GoogleDriveSynchronizatorJava
+build/scripts/GoogleDriveSynchronizatorJava.bat
 
