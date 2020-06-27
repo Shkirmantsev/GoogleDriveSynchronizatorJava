@@ -5,4 +5,6 @@ build/libs/**
 .gradle/6.3/fileHashes/**
 .gradle/6.3/javaCompile/**
 .gradle/buildOutputCleanup/**
+Secret/
+Secret/**
 
