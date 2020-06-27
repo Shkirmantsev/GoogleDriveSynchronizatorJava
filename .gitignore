@@ -1,4 +1,8 @@
 build/classes/**
 build/distributions/**
 build/libs/**
+.gradle/6.3/executionHistory/**
+.gradle/6.3/fileHashes/**
+.gradle/6.3/javaCompile/**
+.gradle/buildOutputCleanup/**
 
