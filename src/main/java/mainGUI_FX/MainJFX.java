@@ -18,13 +18,13 @@ import javafx.stage.Stage;
  *
  * @author Shkirmantsev
  */
-public class MainFx extends Application
+public class MainJFX extends Application
 {
     private static Stage stage;
     @Override
     public void start(Stage stage) throws IOException
     {
-        MainFx.stage=stage;
+        MainJFX.stage=stage;
         
         Parent root = FXMLLoader.load(getClass().getResource( "/StartGUIWindow.fxml"));
         
@@ -37,7 +37,7 @@ public class MainFx extends Application
 
     }
      public static void setStageTitle(String newTitle) {
-        MainFx.stage.setTitle(newTitle);
+        MainJFX.stage.setTitle(newTitle);
         
        
     }

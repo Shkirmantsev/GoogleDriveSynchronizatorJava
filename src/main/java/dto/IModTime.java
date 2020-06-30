@@ -44,30 +44,48 @@ public interface IModTime
 
     static public long getDBChangeVersion()
     {
+        ResultSet res=null;
         try (Connection conn = dbUtil.DB.getConnection();
             Statement stat = conn.createStatement();)
         {
-            ResultSet res = stat.executeQuery("SELECT 'Version' FROM version WHERE ID=1;");
+            res = stat.executeQuery("SELECT 'Version' FROM version WHERE ID=1;");
             return res.next() ? res.getLong(1) : 0;
         } catch (SQLException ex)
         {
             printer.print(Level.SEVERE, "TEST POINT6");
             printer.print(Level.SEVERE, ex);
         }
+        finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
+        }
         return 0;
     }
 
     static public long getAnyDBChangeVersion(Path dbpath)
     {
+        ResultSet res=null;
         try (Connection conn = dbUtil.DB.getAnyConnection(dbpath);
             Statement stat = conn.createStatement();)
         {
-            ResultSet res = stat.executeQuery("SELECT Version FROM version WHERE ID=1;");
-            return res.next() ? res.getLong(1) : 0;
+            res = stat.executeQuery("SELECT Version FROM version WHERE ID=1;");
+            long reslong=res.next() ? res.getLong(1) : 0;
+            res.close();
+            return reslong;
         } catch (SQLException ex)
         {
             printer.print(Level.SEVERE, "FELLER IN TEST POINT6 IMODTime");
             printer.print(Level.SEVERE, ex);
+        }
+        finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
         }
         return 0;
     }

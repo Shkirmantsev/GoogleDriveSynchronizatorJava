@@ -360,7 +360,7 @@ public class StartGUIWindowController implements Initializable
         String mail = discMailField.getText();
         if (mail != null && !mail.equalsIgnoreCase(""))
         {
-            MainFx.setStageTitle("sync: " + mail);
+            MainJFX.setStageTitle("sync: " + mail);
 
         }
 

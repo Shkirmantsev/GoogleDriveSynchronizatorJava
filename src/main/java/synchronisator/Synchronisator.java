@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -248,20 +250,19 @@ public class Synchronisator
             .forEach(dfObj
                 -> //SAVE INFO IN DB
                 (new FileModTimeModel(dfObj, HoldPl.DRIVE)).computeAndUpdDB(HoldPl.DRIVE));
-        String[] strToDelete = new String[]
-        {
-            null
-        };
-        //Drive, Files
+       
+        final List<String> strToDelete = new LinkedList<>();
+        
+        //Drive=> Files
         set = driveTree.getKeySetMyIDHshFiles();
-
+        
         set.stream()
             .map(Id -> (FileObjDrive) driveTree.getFObjByIDInMyIDHshFiles(Id))
             .forEach(dfObj ->
             {
-                if (dfObj.getTrueName().equalsIgnoreCase(DBRefresher.FILENAME))
+                if (((FileObjDrive)dfObj).getTrueName().startsWith(DBRefresher.FILENAME))
                 {
-                    strToDelete[0] = dfObj.getMySimulatedID();
+                     strToDelete.add(dfObj.getMySimulatedID()) ;
 
                 } else
                 //SAVE INFO IN DB                
@@ -271,10 +272,10 @@ public class Synchronisator
             });
 
         /////////////////
-        if (strToDelete[0] != null)
+        if (!strToDelete.isEmpty())
         {
-            driveTree.removeFromBaseMyIDHshFilesOS(strToDelete[0]);
-            strToDelete[0] = null;
+            strToDelete.forEach(str->driveTree.removeFromBaseMyIDHshFilesOS(str));
+            
         }
         /////////////////
 
@@ -287,15 +288,15 @@ public class Synchronisator
                 -> //SAVE INFO IN DB
                 (new FileModTimeModel(dfObj, HoldPl.OS)).computeAndUpdDB(HoldPl.OS));
 
-        //OS, Files
+        //OS=>Files
         set = rFTreeInOS.getKeySetMyIDHshFiles();
         set.stream()
             .map(Id -> (FileObjOs) rFTreeInOS.getFObjByIDInMyIDHshFiles(Id))
             .forEach(dfObj ->
             {
-                if (dfObj.getTrueName().equalsIgnoreCase(DBRefresher.FILENAME))
+                if (((FileObjOs)dfObj).getTrueName().startsWith(DBRefresher.FILENAME))
                 {
-                    strToDelete[0] = dfObj.getMySimulatedID();
+                     strToDelete.add(dfObj.getMySimulatedID()) ;
                 } else
                 //SAVE INFO IN DB                
                 {
@@ -303,12 +304,11 @@ public class Synchronisator
                 }
             });
 
-        ////////
-        if (strToDelete[0] != null)
+        /////////////////
+        if (!strToDelete.isEmpty())
         {
-            rFTreeInOS.removeFromBaseMyIDHshFilesOS(strToDelete[0]);
-            strToDelete[0] = null;
-
+            strToDelete.forEach(str->driveTree.removeFromBaseMyIDHshFilesOS(str));
+            
         }
         /////////////////
         return true;
@@ -521,7 +521,7 @@ public class Synchronisator
 //-------------------------------------------------------------------------------
 
     private boolean uploadMissingFoldersAndFiles() throws IOException, UnsupportedEncodingException, NoSuchAlgorithmException
-    {
+    {   DBRefresher.chooseActualVersion();
         printer.print("--- uploadMissingFoldersAndFiles() START---");
         // iterator with nodes, wich must be upload from OS
         Iterator uploadDirIterator = Collections.synchronizedList(
@@ -707,6 +707,7 @@ public class Synchronisator
 
         }
         printer.print("///////////////  <<== uploadMissingFoldersAndFiles() END---");
+        DBRefresher.pushInfoDBOnDrive();
         return true;
     }
 //--------------------------------------------------------------------------------------
@@ -1011,9 +1012,11 @@ this.presentDirDriveAbsentOS.stream()
         //DELETE FILES
         Iterator<FileObjOs> filesToDelete = Collections.synchronizedList(this.presentFileOSAbsentDrive.stream()
             .filter(id -> !id.equalsIgnoreCase(this.rootGenID))
-            .map(Id -> (FileObjOs) rFTreeInOS.getFObjByIDInMyIDHshFiles(Id)).collect(Collectors.toList())) //IMPORTANT!!! Without will not work with Iterator.Remove()
-            .listIterator();
-
+            .map(Id -> (FileObjOs) rFTreeInOS.getFObjByIDInMyIDHshFiles(Id))
+                .filter(fobj -> !fobj.getTrueName().equals(DBRefresher.FILENAME))
+                .collect(Collectors.toList())) //IMPORTANT!!! Without will not work with Iterator.Remove()
+                .listIterator();
+       
         Optional parOpt;
         String genParIDTmp;
         boolean deleted = false;

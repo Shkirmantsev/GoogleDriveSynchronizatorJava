@@ -10,4 +10,10 @@ Secret/**
 .gradle/6.3/fileHashes/fileHashes.lock
 build/scripts/GoogleDriveSynchronizatorJava
 build/scripts/GoogleDriveSynchronizatorJava.bat
-
+.gradle/6.3/fileHashes/**
+.gradle/checksums/**
+.gradle/checksums/**
+.gradle/nb-cache/**
+build/scripts/**
+property
+property/**

@@ -51,11 +51,11 @@ public class DBRefresher
         + File.separator + "DB" + File.separator + "dbdrive" + File.separator + FILENAME;
 
     //in Resource folder
-    private static final String PATH_STR_TEMPLATE_VERSION = "db" + File.separator + FILENAME;
+    private static final String PATH_STR_TEMPLATE_VERSION = "/db/"+FILENAME;
 
     ///////////////////////////////////////////////////////////////////////
-    private static final Path PATH_OS_DB = Paths.get(PATH_STR_WORK_VERSION);
-    private static final Path PATH_DRIVE_DB = Paths.get(PATH_STR_DRIVE_VERSION);
+    private static final Path PATH_OS_DB = Paths.get(PATH_STR_WORK_VERSION).normalize().toAbsolutePath();
+    private static final Path PATH_DRIVE_DB = Paths.get(PATH_STR_DRIVE_VERSION).normalize().toAbsolutePath();
 
 
     static
@@ -99,9 +99,11 @@ public class DBRefresher
             osVersion = IModTime.getAnyDBChangeVersion(PATH_OS_DB);
 
         }
-
+        
         File templDBFile;
-        templDBFile = new File(classLoader.getResource(PATH_STR_TEMPLATE_VERSION).getFile());
+        URL url=DBRefresher.class.getResource(PATH_STR_TEMPLATE_VERSION);
+       
+        templDBFile = new File(url.getFile());
 
         long maxVersion = Collections.max(Arrays.asList(new Long[]
         {

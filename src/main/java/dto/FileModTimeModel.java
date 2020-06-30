@@ -16,14 +16,14 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
  *
  * @author Shkirmantsev
  */
-public class FileModTimeModel implements IModTime
-{
+public class FileModTimeModel implements IModTime {
 
     private String fileMD5Name;
 
@@ -41,17 +41,14 @@ public class FileModTimeModel implements IModTime
     private long modTimeRealDBOS = 0;
     //
 
-    public FileModTimeModel(FileObjDTO fObj, HoldPl hp)
-    {
+    public FileModTimeModel(FileObjDTO fObj, HoldPl hp) {
         super();
         this.fileMD5Name = fObj.getHashName();
         this.fileMD5Name = fObj.getHashName();
-        if (hp.equals(HoldPl.DRIVE))
-        {
+        if (hp.equals(HoldPl.DRIVE)) {
             this.fileModTimeGoog = fObj.getModified();
 
-        } else if (hp.equals(HoldPl.OS))
-        {
+        } else if (hp.equals(HoldPl.OS)) {
             this.fileModTimeOS = fObj.getModified();
 
         }
@@ -61,17 +58,14 @@ public class FileModTimeModel implements IModTime
 
     }
 
-    public FileModTimeModel(AbstrFolderTree fObj, HoldPl hp)
-    {
+    public FileModTimeModel(AbstrFolderTree fObj, HoldPl hp) {
         super();
 
         this.fileMD5Name = fObj.getMySimulatedID();
 
-        if (hp.equals(HoldPl.DRIVE))
-        {
+        if (hp.equals(HoldPl.DRIVE)) {
             this.fileModTimeGoog = fObj.getModifiedTime();
-        } else if (hp.equals(HoldPl.OS))
-        {
+        } else if (hp.equals(HoldPl.OS)) {
             this.fileModTimeOS = fObj.getModifiedTime();
         }
 
@@ -80,8 +74,7 @@ public class FileModTimeModel implements IModTime
 
     }
 
-    public FileModTimeModel(AbstrFolderTree dFObj, long realTime, HoldPl hp)
-    {
+    public FileModTimeModel(AbstrFolderTree dFObj, long realTime, HoldPl hp) {
         this(dFObj, hp);
         this.fileModTimeReal = realTime;
 
@@ -92,36 +85,30 @@ public class FileModTimeModel implements IModTime
 
     ///////////////////////////////////////////////
     @Override
-    public FileModTimeModel setFileModTimeReal(long fileModTimeReal)
-    {
+    public FileModTimeModel setFileModTimeReal(long fileModTimeReal) {
         this.fileModTimeReal = fileModTimeReal;
         return this;
     }
 
 //---------------------
     @Override
-    public long getCompMTime(HoldPl hp)
-    {
+    public long getCompMTime(HoldPl hp) {
 
-        switch (hp)
-        {
+        switch (hp) {
             case DRIVE:
                 //find hash->modTimeg
                 //if hash not exist-> ModTime= Obj modtime
-                if (this.modTimeRealDB == 0)
-                {
+                if (this.modTimeRealDB == 0) {
                     return this.fileModTimeGoog;
                 }
                 //if exist:        
                 //--then if mTime==mTime => take from real in table;
-                if (this.modTimeDB != 0 && this.fileModTimeGoog == this.modTimeDB)
-                {
+                if (this.modTimeDB != 0 && this.fileModTimeGoog == this.modTimeDB) {
                     return this.modTimeRealDB;
                 }
 
                 //-------if mdata!=mdata ==>>take from obj
-                if (this.modTimeDB != 0 && this.fileModTimeGoog != this.modTimeDB)
-                {
+                if (this.modTimeDB != 0 && this.fileModTimeGoog != this.modTimeDB) {
                     return this.fileModTimeGoog;
                 }
                 return this.fileModTimeGoog;
@@ -129,18 +116,15 @@ public class FileModTimeModel implements IModTime
             case OS:
                 //find hash->modTimeg
                 //if hash not exist-> ModTime= Obj modtime
-                if (this.modTimeRealDBOS == 0)
-                {
+                if (this.modTimeRealDBOS == 0) {
                     return this.fileModTimeOS;
                 }
 
-                if (this.modTimeDBOS != 0 && this.fileModTimeOS == this.modTimeDBOS)
-                {
+                if (this.modTimeDBOS != 0 && this.fileModTimeOS == this.modTimeDBOS) {
                     return this.modTimeRealDBOS;
                 }
                 //-------if mdata!=mdata ==>>take from obj
-                if (this.modTimeDBOS != 0 && this.fileModTimeOS != this.modTimeDBOS)
-                {
+                if (this.modTimeDBOS != 0 && this.fileModTimeOS != this.modTimeDBOS) {
                     return this.fileModTimeOS;
                 }
                 return this.fileModTimeOS;
@@ -149,20 +133,16 @@ public class FileModTimeModel implements IModTime
         return -1;
     }
 
-    public long getModTimeRealDB()
-    {
+    public long getModTimeRealDB() {
         return modTimeRealDB;
     }
 
     @Override
-    public FileModTimeModel updMTimeInDB(HoldPl hp)
-    {
-        if (hp.equals(HoldPl.DRIVE))
-        {
+    public FileModTimeModel updMTimeInDB(HoldPl hp) {
+        if (hp.equals(HoldPl.DRIVE)) {
             this.isertOrUpdRow(this.fileMD5Name, this.fileModTimeGoog, this.fileModTimeReal, hp);
             loadParams1FromDB();
-        } else if (HoldPl.OS.equals(hp))
-        {
+        } else if (HoldPl.OS.equals(hp)) {
             this.isertOrUpdRow(this.fileMD5Name, this.fileModTimeOS, this.fileModTimeReal, hp);
 
             loadParams2FromDB();
@@ -171,8 +151,7 @@ public class FileModTimeModel implements IModTime
     }
 
     @Override
-    public FileModTimeModel computeAndUpdDB(HoldPl hp)
-    {
+    public FileModTimeModel computeAndUpdDB(HoldPl hp) {
 
         this.fileModTimeReal = this.getCompMTime(hp);
         updMTimeInDB(hp);
@@ -183,113 +162,111 @@ public class FileModTimeModel implements IModTime
 
     //==============================
     //==============================
-    private void loadParams1FromDB()
-    {
+    private void loadParams1FromDB() {
+        ResultSet res = null;
         String sqlReq = "SELECT ModifTimeLongGoog,ModifTimeLongReal FROM filemodifytime WHERE FileNameMD5Hash=?;";
         try (Connection conn = dbUtil.DB.getConnection();
-            PreparedStatement pStat = conn.prepareStatement(sqlReq);)
-        {
-            
+                PreparedStatement pStat = conn.prepareStatement(sqlReq);) {
+
             pStat.setString(1, this.fileMD5Name);
-            ResultSet res = pStat.executeQuery();
-            if (res.next())
-            {
+            res = pStat.executeQuery();
+            if (res.next()) {
                 this.modTimeDB = res.getLong("ModifTimeLongGoog"); //ModifTimeLongGoog,ModifTimeLongReal
                 this.modTimeRealDB = res.getLong("ModifTimeLongReal");
             }
 
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             printer.print(Level.SEVERE, "TEST POINT1 (FileModTimeModel)");
             printer.print(Level.SEVERE, ex);
+        } finally {
+            try {
+                res.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(FileModTimeModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
     }
 
-    private void loadParams2FromDB()
-    {
+    private void loadParams2FromDB() {
+        ResultSet res = null;
         String sqlReq = "SELECT ModifTimeLongOS,ModifTimeLongReal FROM filemodifyos WHERE FileNameMD5Hash=?;";
         try (Connection conn = dbUtil.DB.getConnection();
-            PreparedStatement pStat = conn.prepareStatement(sqlReq);)
-        {
+                PreparedStatement pStat = conn.prepareStatement(sqlReq);) {
             pStat.setString(1, this.fileMD5Name);
-            ResultSet res = pStat.executeQuery();
-            if (res.next())
-            {
+            res = pStat.executeQuery();
+            if (res.next()) {
                 this.modTimeDBOS = res.getLong("ModifTimeLongOS"); //ModifTimeLongGoog,ModifTimeLongReal
                 this.modTimeRealDBOS = res.getLong("ModifTimeLongReal");
             }
 
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             printer.print(Level.SEVERE, "TEST POINT2 (FileModTimeModel)");
             printer.print(Level.SEVERE, ex);
+        } finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
         }
 
     }
 
-    private boolean isHashExistInDB(String hash, HoldPl hp)
-    {
+    private boolean isHashExistInDB(String hash, HoldPl hp) {
         boolean exist = false;
         String sqlReq = "";
-        ResultSet res;
-        if (hp.equals(HoldPl.DRIVE))
-        {
+        ResultSet res = null;
+        if (hp.equals(HoldPl.DRIVE)) {
             sqlReq = "SELECT FileNameMD5Hash FROM filemodifytime WHERE FileNameMD5Hash=?;";
-        } else if (hp.equals(HoldPl.OS))
-        {
+        } else if (hp.equals(HoldPl.OS)) {
             sqlReq = "SELECT FileNameMD5Hash FROM filemodifyos WHERE FileNameMD5Hash=?;";
         }
         try (Connection conn = dbUtil.DB.getConnection();
-            PreparedStatement pStat = conn.prepareStatement(sqlReq);)
-        {
+                PreparedStatement pStat = conn.prepareStatement(sqlReq);) {
 
             pStat.setString(1, hash);
 
             res = pStat.executeQuery();
+            exist = res.next();
 
-            return res.next();
-        } catch (SQLException ex)
-        {
+            return exist;
+        } catch (SQLException ex) {
             printer.print(Level.SEVERE, "TEST POINT3 (FileModTimeModel)");
             printer.print(Level.SEVERE, ex);
+        } finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
         }
         return exist;
     }
 
-    private int isertOrUpdRow(String hash, long mTimeSys, long mTimeReal, HoldPl hp)
-    {
-//        System.out.println("TEST hash: " + hash);
-//        System.out.println("TEST mTimeSys: " + mTimeSys);
-//        System.out.println("TEST mTimeReal: " + mTimeReal);
-//        System.out.println("TEST hp: " + hp);
-
+    private int isertOrUpdRow(String hash, long mTimeSys, long mTimeReal, HoldPl hp) {
+// 
         int res = 0;
         boolean alreadyExist = false;
 
-        if (!this.isHashExistInDB(hash, hp))
-        {
+        if (!this.isHashExistInDB(hash, hp)) {
             String sql = "";
-            if (hp.equals(HoldPl.DRIVE))
-            {
+            if (hp.equals(HoldPl.DRIVE)) {
                 sql = "INSERT INTO filemodifytime (FileNameMD5Hash, ModifTimeLongGoog,ModifTimeLongReal) VALUES (?,?,?);";
             }
-            if (hp.equals(HoldPl.OS))
-            {
+            if (hp.equals(HoldPl.OS)) {
                 sql = "INSERT INTO filemodifyos (FileNameMD5Hash, ModifTimeLongOS,ModifTimeLongReal) VALUES (?,?,?);";
             }
 
             try (Connection conn = dbUtil.DB.getConnection();
-                PreparedStatement stat = conn.prepareStatement(sql);)
-            {
+                    PreparedStatement stat = conn.prepareStatement(sql);) {
 
                 stat.setString(1, hash);
                 stat.setLong(2, mTimeSys);
                 stat.setLong(3, mTimeReal);
                 res += stat.executeUpdate();
 
-            } catch (SQLException ex)
-            {
+            } catch (SQLException ex) {
                 printer.print(Level.SEVERE, "TEST POINT4 (FileModTimeModel)");
                 printer.print(Level.SEVERE, ex);
 
@@ -297,21 +274,17 @@ public class FileModTimeModel implements IModTime
             IModTime.setDBChangeVersion((new Date()).toInstant().toEpochMilli());
 
             return res;
-        } else
-        {
+        } else {
             String sql = "";
-            if (hp.equals(HoldPl.DRIVE))
-            {
+            if (hp.equals(HoldPl.DRIVE)) {
                 sql = "UPDATE filemodifytime SET ModifTimeLongGoog=?,ModifTimeLongReal=? WHERE FileNameMD5Hash=?;";
             }
-            if (hp.equals(HoldPl.OS))
-            {
+            if (hp.equals(HoldPl.OS)) {
                 sql = "UPDATE  filemodifyos SET ModifTimeLongOS=?,ModifTimeLongReal=? WHERE FileNameMD5Hash=?;";
             }
 
             try (Connection conn = dbUtil.DB.getConnection();
-                PreparedStatement stat = conn.prepareStatement(sql);)
-            {
+                    PreparedStatement stat = conn.prepareStatement(sql);) {
 
                 stat.setString(3, hash);
                 stat.setLong(1, mTimeSys);
@@ -319,8 +292,7 @@ public class FileModTimeModel implements IModTime
 
                 res += stat.executeUpdate();
 
-            } catch (SQLException ex)
-            {
+            } catch (SQLException ex) {
                 printer.print(Level.SEVERE, "TEST POINT5 (FileModTimeModel)");
                 printer.print(Level.SEVERE, ex);
 
@@ -332,8 +304,7 @@ public class FileModTimeModel implements IModTime
 
     }
 
-    public static boolean cleanDBTresh(RootOSFolderTree rFTreeInOS, RootDriveFolderTree driveTree)
-    {
+    public static boolean cleanDBTresh(RootOSFolderTree rFTreeInOS, RootDriveFolderTree driveTree) {
 
         final String rootGenID = rFTreeInOS.getMySimulatedID();
 
@@ -360,22 +331,25 @@ public class FileModTimeModel implements IModTime
         //For DRIVE
         //
         String sqlReq = "SELECT FileNameMD5Hash FROM filemodifytime;";
-
+        ResultSet res = null;
         try (Connection conn = dbUtil.DB.getConnection();
-            Statement stat = conn.createStatement();)
-        {
+                Statement stat = conn.createStatement();) {
 
-            ResultSet res = stat.executeQuery(sqlReq);
-            while (res.next())
-            {
+            res = stat.executeQuery(sqlReq);
+            while (res.next()) {
                 rDriveDBUnionSet.add(res.getString("FileNameMD5Hash"));
 
             }
 
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             printer.print(Level.SEVERE, "TEST POINT cleanDBTresh (1)");
             printer.print(Level.SEVERE, ex);
+        } finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
         }
 
         //==============
@@ -383,28 +357,31 @@ public class FileModTimeModel implements IModTime
         sqlReq = "SELECT FileNameMD5Hash FROM filemodifyos;";
 
         try (Connection conn = dbUtil.DB.getConnection();
-            Statement stat = conn.createStatement();)
-        {
+                Statement stat = conn.createStatement();) {
 
-            ResultSet res = stat.executeQuery(sqlReq);
-            while (res.next())
-            {
+            res = stat.executeQuery(sqlReq);
+            while (res.next()) {
                 rOSDBUnionSet.add(res.getString("FileNameMD5Hash"));
 
             }
 
-        } catch (SQLException ex)
-        {
+        } catch (SQLException ex) {
             printer.print(Level.SEVERE, "TEST POINT cleanDBTresh (2)");
             printer.print(Level.SEVERE, ex);
+        }
+        finally {
+            if (res != null) try {
+                res.close();
+            } catch (SQLException ex) {
+                printer.print(Level.SEVERE, ex);
+            }
         }
 
         rDriveDBUnionSet.removeAll(rDriveUnionSet);
         rOSDBUnionSet.removeAll(rOSUnionSet);
 
         rOSDBUnionSet.retainAll(rDriveDBUnionSet); //Findet TRESH
-        if (!rOSDBUnionSet.isEmpty())
-        {
+        if (!rOSDBUnionSet.isEmpty()) {
             rOSDBUnionSet.forEach(key -> IModTime.deleteHashFromDB(key));
         }
         //============
