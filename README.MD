@@ -1,7 +1,7 @@
 ﻿
 	GET STARTING (INSTRUCTION):
 	===========================
-
+  0. !!!! Must be Installed Java v 11 or later (Oracle)!!!
 
   1. Download Folder „READY_TO_START“ with file 	“GoogleDriveSynchronizatorJava.jar”
    
